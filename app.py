@@ -335,7 +335,7 @@ elif st.session_state.level < len(QUESTIONS):
         if st.button("Lock in my answer 💌", use_container_width=True):
             selected_index = question_data["options"].index(choice)
 
-            if selected_index == question_data["correct"]:
+          if selected_index == question_data["correct"]:
                 st.session_state.solved.add(key)
                 st.session_state[f"feedback_{key}"] = "correct"
                 st.rerun()
@@ -385,10 +385,10 @@ elif not st.session_state.candle_blown:
     )
 
     if st.button("Blow out the candle 💨", use_container_width=True):
-    st.session_state.candle_blown = True
-    st.session_state.improvement_answer = ""
-    st.session_state.ask_improvement = True
-    st.rerun()
+        st.session_state.candle_blown = True
+        st.session_state.improvement_answer = ""
+        st.session_state.ask_improvement = True
+        st.rerun()
     # =====================================================
 # ONE HEART-TO-HEART QUESTION 💌
 # =====================================================
