@@ -326,24 +326,24 @@ elif st.session_state.level < len(QUESTIONS):
     )
 
     if key not in st.session_state.solved:
-        choice = st.radio(
-            "Choose your answer:",
-            question_data["options"],
-            key=f"choice_{key}"
-        )
+    choice = st.radio(
+        "Choose your answer:",
+        question_data["options"],
+        key=f"choice_{key}"
+    )
 
-        if st.button("Lock in my answer 💌", use_container_width=True):
-            selected_index = question_data["options"].index(choice)
+    if st.button("Lock in my answer 💌", use_container_width=True):
+        selected_index = question_data["options"].index(choice)
 
-          if selected_index == question_data["correct"]:
-                st.session_state.solved.add(key)
-                st.session_state[f"feedback_{key}"] = "correct"
-                st.rerun()
-            else:
-                st.session_state[f"feedback_{key}"] = "wrong"
+        if selected_index == question_data["correct"]:
+            st.session_state.solved.add(key)
+            st.session_state[f"feedback_{key}"] = "correct"
+            st.rerun()
+        else:
+            st.session_state[f"feedback_{key}"] = "wrong"
 
-        if st.session_state.get(f"feedback_{key}") == "wrong":
-            st.error("Nope! Try again, birthday girl. 😏 Hint: you know this one!")
+    if st.session_state.get(f"feedback_{key}") == "wrong":
+        st.error("Nope! Try again, birthday girl. 😏 Hint: you know this one!")
 
     else:
         st.success(question_data["success"])
