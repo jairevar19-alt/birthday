@@ -385,10 +385,69 @@ elif not st.session_state.candle_blown:
     )
 
     if st.button("Blow out the candle 💨", use_container_width=True):
-        st.session_state.candle_blown = True
-        st.balloons()
-        st.rerun()
+    st.session_state.candle_blown = True
+    st.session_state.improvement_answer = ""
+    st.session_state.ask_improvement = True
+    st.rerun()
+    # =====================================================
+# ONE HEART-TO-HEART QUESTION 💌
+# =====================================================
 
+elif st.session_state.get("ask_improvement", False):
+    st.title("One little question, Bubu... 🥹💗")
+
+    st.write(
+        "Before I show you your final surprise, "
+        "there's something I really want to ask you."
+    )
+
+    st.write(
+        "I love you, and I want to keep learning how to love "
+        "you better. You can be completely honest with me. ❤️"
+    )
+
+    improvement = st.radio(
+        "What is one thing you'd like me to improve in my behaviour?",
+        [
+            "Listen to you more and understand your feelings ❤️",
+            "Give you more time, attention, and affection 🫂",
+            "Be more patient during disagreements 🌷",
+            "Communicate better and express my feelings 💬",
+            "Understand you better instead of assuming things 🥹",
+            "Respect your space and personal boundaries 🦋",
+            "Show my love more through actions 💗",
+            "Something else — let me tell you ✍️"
+        ],
+        index=None,
+        key="improvement_choice",
+        placeholder="Choose the one that feels right..."
+    )
+
+    custom_answer = ""
+
+    if improvement == "Something else — let me tell you ✍️":
+        custom_answer = st.text_area(
+            "Tell me honestly, meri jaan 💌",
+            placeholder="I'll listen with an open heart...",
+            key="custom_improvement_answer"
+        )
+
+    if st.button("Continue to my surprise 🎁", use_container_width=True):
+        if improvement is None:
+            st.warning("Choose an answer first, Bubu. 💗")
+        elif (
+            improvement == "Something else — let me tell you ✍️"
+            and not custom_answer.strip()
+        ):
+            st.warning("Write your answer first, meri jaan. 🫶")
+        else:
+            st.session_state.improvement_answer = (
+                custom_answer.strip()
+                if improvement == "Something else — let me tell you ✍️"
+                else improvement
+            )
+            st.session_state.ask_improvement = False
+            st.rerun()
 # =====================================================
 # FINAL SURPRISE
 # =====================================================
@@ -396,45 +455,109 @@ elif not st.session_state.candle_blown:
 else:
     st.balloons()
     st.title(f"One last thing, {SEJU}... 🥹💗")
+   # =====================================================
+# FINAL SURPRISE — UNLOCK PHOTOS ONLY AT THE END
+# =====================================================
+
+else:
+    st.balloons()
+
+    st.title(f"One last thing, {SEJU}... 🥹💗")
     st.write("No more questions. Promise.")
+    st.write("You've completed all three levels and earned all your hearts! 💗")
 
-    st.subheader("Our little memories 📸")
-
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent
-photo_folder = BASE_DIR / "photos"
-captions = [
-        "Our favourite photo 💗",
-        "A cute memory 🫶",
-        "Our silly side 😂",
-        "One for the forever folder 💌"
-    ]
-
-cols = st.columns(2)
-for i, caption in enumerate(captions, start=1):
-    image_path = photo_folder / f"photo{i}.jpg"
-    with cols[(i - 1) % 2]:
-        if image_path.exists():
-            st.image(str(image_path), caption=caption, use_container_width=True)
-        else:
-            st.info(f"📷 Photo {i} goes here\n\nAdd photos/photo{i}.jpg")
+    # Start with memories locked
+    if "memories_revealed" not in st.session_state:
+        st.session_state.memories_revealed = False
 
     st.divider()
-    st.subheader("A little letter for you 💌")
-    st.markdown(
-        "<div class='birthday-card'>"
-        + BIRTHDAY_LETTER.replace("\n", "<br>")
-        + "</div>",
-        unsafe_allow_html=True
-    )
 
-    st.write("")
-    st.markdown(
-        "<h2 style='text-align:center;'>Happy birthday, my girl. 🩷</h2>",
-        unsafe_allow_html=True
-    )
+    if not st.session_state.memories_revealed:
+        st.markdown(
+            "<h1 style='text-align:center;'>🎁💌🎀</h1>",
+            unsafe_allow_html=True
+        )
 
-    if st.button("Play the adventure again 🎊"):
-        reset_game()
-        st.rerun()
+        st.subheader("A little surprise is waiting for you...")
+        st.write(
+            "You've made it this far, birthday girl. "
+            "Ready to unlock some of our favourite memories? 🫶"
+        )
+
+        if st.button(
+            "💗 Open your memories 💗",
+            use_container_width=True
+        ):
+            st.session_state.memories_revealed = True
+            st.rerun()
+
+    else:
+        from pathlib import Path
+
+        BASE_DIR = Path(__file__).resolve().parent
+        photo_folder = BASE_DIR / "photos"
+
+        st.markdown(
+            "<h1 style='text-align:center;'>"
+            "Happy Birthday, Mari jaan! 🥹❤️"
+            "</h1>",
+            unsafe_allow_html=True
+        )
+
+        st.write(
+            "A few little moments that became special "
+            "because I got to share them with you. 💗"
+        )
+
+        captions = [
+            "Our favourite photo 💗",
+            "A cute memory 🫶",
+            "Our silly side 😂",
+            "One for the forever folder 💌"
+        ]
+
+        cols = st.columns(2)
+
+        for i, caption in enumerate(captions, start=1):
+            image_path = photo_folder / f"photo{i}.jpg"
+
+            with cols[(i - 1) % 2]:
+                if image_path.exists():
+                    st.image(
+                        str(image_path),
+                        caption=caption,
+                        use_container_width=True
+                    )
+                else:
+                    st.info(
+                        f"📷 Photo {i} goes here\n\n"
+                        f"Add it as photos/photo{i}.jpg"
+                    )
+
+        st.divider()
+
+        st.subheader("A little letter for you 💌")
+
+        st.markdown(
+            "<div class='birthday-card'>"
+            + BIRTHDAY_LETTER.replace("\n", "<br>")
+            + "</div>",
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            "<h2 style='text-align:center;'>"
+            "Happy birthday, my girl. 🩷"
+            "</h2>",
+            unsafe_allow_html=True
+        )
+
+        if st.button(
+            "Play the adventure again 🎊",
+            use_container_width=True
+        ):
+            reset_game()
+            st.session_state.memories_revealed = False
+            st.rerun()
+            st.session_state.improvement_answer = ""
+            
