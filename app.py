@@ -1,5 +1,6 @@
 
 import base64
+import html
 from pathlib import Path
 
 import streamlit as st
@@ -7,7 +8,7 @@ import streamlit.components.v1 as components
 
 
 # =====================================================
-# PAGE SETTINGS — KEEP THIS NEAR THE TOP
+# PAGE SETTINGS
 # =====================================================
 
 st.set_page_config(
@@ -30,14 +31,14 @@ MUSIC_FILE = BASE_DIR / "bg_music.mp3"
 
 
 # =====================================================
-# BACKGROUND MUSIC
+# BACKGROUND MUSIC — FIXED F-STRING ISSUE
 # =====================================================
 
 def romantic_background_music():
     """Display a music player for the birthday surprise."""
 
     if not MUSIC_FILE.is_file():
-        st.info(
+        st.caption(
             "♫ Add bg_music.mp3 beside app.py "
             "to enable birthday music."
         )
@@ -46,65 +47,63 @@ def romantic_background_music():
     try:
         audio_data = base64.b64encode(
             MUSIC_FILE.read_bytes()
-        ).decode("utf-8")
+        ).decode("ascii")
     except OSError:
         st.warning("The birthday music file could not be read.")
         return
 
-    components.html(
-        f"""
-        <!DOCTYPE html>
-        <html>
-        <body style="margin:0;background:transparent;">
-            <audio id="birthdayMusic"
-                   loop
-                   preload="auto"
-                   src="data:audio/mpeg;base64,{audio_data}">
-            </audio>
+    # This is deliberately a normal string, not an f-string.
+    # Therefore, JavaScript braces do not cause Python syntax errors.
+    player_html = """
+    <!DOCTYPE html>
+    <html>
+    <body style="margin:0;background:transparent;">
+        <audio id="birthdayMusic"
+               loop
+               preload="auto"
+               src="data:audio/mpeg;base64,{{AUDIO_DATA}}">
+        </audio>
 
-            <button id="musicButton"
-                style="
-                    border:1px solid #efb6cb;
-                    border-radius:20px;
-                    background:#fff0f5;
-                    color:#9b4568;
-                    padding:8px 15px;
-                    font-size:13px;
-                    cursor:pointer;
-                ">
-                ♫ Tap to play our song 💗
-            </button>
+        <button id="musicButton"
+            style="border:1px solid #efb6cb;
+                   border-radius:20px;
+                   background:#fff0f5;
+                   color:#9b4568;
+                   padding:8px 15px;
+                   font-size:13px;
+                   cursor:pointer;">
+            ♫ Tap to play our song 💗
+        </button>
 
-            <script>
-                const audio =
-                    document.getElementById("birthdayMusic");
-                const button =
-                    document.getElementById("musicButton");
+        <script>
+            const audio = document.getElementById("birthdayMusic");
+            const button = document.getElementById("musicButton");
 
-                audio.volume = 0.18;
+            audio.volume = 0.18;
 
-                button.addEventListener("click", async () => {
-                    try {
-                        if (audio.paused) {
-                            await audio.play();
-                            button.textContent =
-                                "♫ Playing for you 💗";
-                        } else {
-                            audio.pause();
-                            button.textContent =
-                                "♫ Play our song 💗";
-                        }
-                    } catch (error) {
-                        button.textContent =
-                            "♫ Tap to try again 💗";
+            button.addEventListener("click", async function () {
+                try {
+                    if (audio.paused) {
+                        await audio.play();
+                        button.textContent = "♫ Playing for you 💗";
+                    } else {
+                        audio.pause();
+                        button.textContent = "♫ Play our song 💗";
                     }
-                });
-            </script>
-        </body>
-        </html>
-        """,
-        height=48,
+                } catch (error) {
+                    button.textContent = "♫ Tap to try again 💗";
+                }
+            });
+        </script>
+    </body>
+    </html>
+    """
+
+    player_html = player_html.replace(
+        "{{AUDIO_DATA}}", audio_data
     )
+
+    components.html(player_html, height=48)
 
 
 # =====================================================
@@ -371,9 +370,9 @@ def show_progress():
     hearts = st.session_state.hearts
 
     st.write("### Your earned hearts")
-    st.write(" ".join(
-        ["💗"] * hearts + ["🤍"] * (3 - hearts)
-    ))
+    st.write(
+        " ".join(["💗"] * hearts + ["🤍"] * (3 - hearts))
+    )
     st.progress(hearts / 3)
 
 
@@ -451,9 +450,7 @@ elif st.session_state.level < len(QUESTIONS):
             use_container_width=True,
             key=f"submit_{key}",
         ):
-            selected_index = (
-                question_data["options"].index(choice)
-            )
+            selected_index = question_data["options"].index(choice)
 
             if selected_index == question_data["correct"]:
                 st.session_state.solved.add(key)
@@ -462,9 +459,7 @@ elif st.session_state.level < len(QUESTIONS):
             else:
                 st.session_state[f"feedback_{key}"] = "wrong"
 
-        if st.session_state.get(
-            f"feedback_{key}"
-        ) == "wrong":
+        if st.session_state.get(f"feedback_{key}") == "wrong":
             st.error(
                 "Nope! Try again, birthday girl. 😏 "
                 "Hint: you know this one!"
@@ -682,9 +677,6 @@ else:
         st.divider()
         st.subheader("A little letter for you 💌")
 
-        # Escape HTML characters before displaying the letter.
-        import html
-
         safe_letter = html.escape(BIRTHDAY_LETTER).replace(
             "\n", "<br>"
         )
@@ -707,7 +699,7 @@ else:
         ):
             reset_game()
 
-            # Clear old answers so a replay starts fresh.
+            # Clear widget values from the previous game.
             for state_key in list(st.session_state.keys()):
                 if (
                     state_key.startswith("choice_")
