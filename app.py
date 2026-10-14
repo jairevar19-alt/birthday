@@ -7,19 +7,49 @@ import streamlit.components.v1 as components
 
 
 # =====================================================
+# PAGE SETTINGS — KEEP THIS NEAR THE TOP
+# =====================================================
+
+st.set_page_config(
+    page_title="Happy Birthday Bubu 💗",
+    page_icon="💗",
+    layout="centered",
+)
+
+
+# =====================================================
+# PERSONAL SETTINGS
+# =====================================================
+
+SEJU = "Bubu"
+JIMMU = "JIMMU"
+
+BASE_DIR = Path(__file__).resolve().parent
+PHOTO_FOLDER = BASE_DIR / "photos"
+MUSIC_FILE = BASE_DIR / "bg_music.mp3"
+
+
+# =====================================================
 # BACKGROUND MUSIC
 # =====================================================
 
 def romantic_background_music():
-    music_path = Path(__file__).resolve().parent / "bg_music.mp3"
+    """Display a music player for the birthday surprise."""
 
-    if not music_path.is_file():
-        st.caption("♫ Add bg_music.mp3 beside app.py to enable birthday music.")
+    if not MUSIC_FILE.is_file():
+        st.info(
+            "♫ Add bg_music.mp3 beside app.py "
+            "to enable birthday music."
+        )
         return
 
-    audio_data = base64.b64encode(
-        music_path.read_bytes()
-    ).decode("utf-8")
+    try:
+        audio_data = base64.b64encode(
+            MUSIC_FILE.read_bytes()
+        ).decode("utf-8")
+    except OSError:
+        st.warning("The birthday music file could not be read.")
+        return
 
     components.html(
         f"""
@@ -33,27 +63,40 @@ def romantic_background_music():
             </audio>
 
             <button id="musicButton"
-                style="border:1px solid #efb6cb;
-                       border-radius:20px;
-                       background:#fff0f5;
-                       color:#9b4568;
-                       padding:8px 15px;
-                       font-size:13px;
-                       cursor:pointer;">
-                ♫ Tap once for a little magic 💗
+                style="
+                    border:1px solid #efb6cb;
+                    border-radius:20px;
+                    background:#fff0f5;
+                    color:#9b4568;
+                    padding:8px 15px;
+                    font-size:13px;
+                    cursor:pointer;
+                ">
+                ♫ Tap to play our song 💗
             </button>
 
             <script>
-                const audio = document.getElementById("birthdayMusic");
-                const button = document.getElementById("musicButton");
+                const audio =
+                    document.getElementById("birthdayMusic");
+                const button =
+                    document.getElementById("musicButton");
+
                 audio.volume = 0.18;
 
                 button.addEventListener("click", async () => {
                     try {
-                        await audio.play();
-                        button.textContent = "♫ Playing for you 💗";
+                        if (audio.paused) {
+                            await audio.play();
+                            button.textContent =
+                                "♫ Playing for you 💗";
+                        } else {
+                            audio.pause();
+                            button.textContent =
+                                "♫ Play our song 💗";
+                        }
                     } catch (error) {
-                        button.textContent = "♫ Tap to try again";
+                        button.textContent =
+                            "♫ Tap to try again 💗";
                     }
                 });
             </script>
@@ -65,19 +108,16 @@ def romantic_background_music():
 
 
 # =====================================================
-# BUBU'S BIRTHDAY ADVENTURE — PERSONAL SETTINGS
+# QUIZ QUESTIONS
 # =====================================================
-
-SEJU = "Bubu"
-JIMMU = "JIMMU"
-
-BASE_DIR = Path(__file__).resolve().parent
-PHOTO_FOLDER = BASE_DIR / "photos"
 
 QUESTIONS = [
     {
         "title": "Level 1: The Birthday Queen 👑",
-        "intro": "Easy warm-up. Don't get too confident, birthday girl. 😂",
+        "intro": (
+            "Easy warm-up. Don't get too confident, "
+            "birthday girl. 😂"
+        ),
         "questions": [
             {
                 "q": "Who is the main character today?",
@@ -87,7 +127,10 @@ QUESTIONS = [
                     "The birthday cake",
                 ],
                 "correct": 1,
-                "success": "Correct! The birthday queen has entered the chat. 👑",
+                "success": (
+                    "Correct! The birthday queen has "
+                    "entered the chat. 👑"
+                ),
             },
             {
                 "q": "What does the birthday girl deserve today?",
@@ -97,7 +140,10 @@ QUESTIONS = [
                     "Extra love & cuddles",
                 ],
                 "correct": 2,
-                "success": "Exactly. Only happiness and lots of love & cuddles. 💗",
+                "success": (
+                    "Exactly. Only happiness and lots "
+                    "of love & cuddles. 💗"
+                ),
             },
             {
                 "q": "What is the official birthday rule?",
@@ -107,7 +153,10 @@ QUESTIONS = [
                     "Do everyone's chores",
                 ],
                 "correct": 1,
-                "success": "A rule I fully support. Cake is compulsory. 🍰",
+                "success": (
+                    "A rule I fully support. "
+                    "Cake is compulsory. 🍰"
+                ),
             },
         ],
     },
@@ -118,12 +167,15 @@ QUESTIONS = [
             {
                 "q": "Which one is our special inside joke?",
                 "options": [
-                    "When we met on our 2nd date, you were watching...",
+                    "When we met on our 2nd date, "
+                    "you were watching...",
                     "Your chappal falls from the bike",
                     "I fell at your door that day",
                 ],
                 "correct": 0,
-                "success": "HAHA, only we would understand that. 😂💗",
+                "success": (
+                    "HAHA, only we would understand that. 😂💗"
+                ),
             },
             {
                 "q": "What do I do that annoys you the most?",
@@ -143,7 +195,9 @@ QUESTIONS = [
                     "Ganapati of 2025...",
                 ],
                 "correct": 0,
-                "success": "Keeping this one in our forever folder. 🥹",
+                "success": (
+                    "Keeping this one in our forever folder. 🥹"
+                ),
             },
         ],
     },
@@ -159,7 +213,10 @@ QUESTIONS = [
                     "I am always right",
                 ],
                 "correct": 0,
-                "success": "Correct. Although I may still ask for your snacks. 😂",
+                "success": (
+                    "Correct. Although I may still ask "
+                    "for your snacks. 😂"
+                ),
             },
             {
                 "q": "Which song belongs on your birthday playlist?",
@@ -185,6 +242,11 @@ QUESTIONS = [
     },
 ]
 
+
+# =====================================================
+# BIRTHDAY LETTER
+# =====================================================
+
 BIRTHDAY_LETTER = f"""
 Happy birthday, my {SEJU}. 🩷
 
@@ -209,17 +271,6 @@ Happy birthday, mari jaan. I love you. 💗
 
 — {JIMMU}
 """
-
-
-# =====================================================
-# PAGE SETTINGS
-# =====================================================
-
-st.set_page_config(
-    page_title=f"Happy Birthday {SEJU} 💗",
-    page_icon="💗",
-    layout="centered",
-)
 
 
 # =====================================================
@@ -318,8 +369,11 @@ def question_key(level, question):
 
 def show_progress():
     hearts = st.session_state.hearts
+
     st.write("### Your earned hearts")
-    st.write(" ".join(["💗"] * hearts + ["🤍"] * (3 - hearts)))
+    st.write(" ".join(
+        ["💗"] * hearts + ["🤍"] * (3 - hearts)
+    ))
     st.progress(hearts / 3)
 
 
@@ -332,15 +386,21 @@ if not st.session_state.started:
         "<h1 style='text-align:center;'>🎀🎂</h1>",
         unsafe_allow_html=True,
     )
+
     st.title(f"Happy Birthday, {SEJU}!")
-    st.subheader("Welcome to your little birthday adventure 💗")
+    st.subheader(
+        "Welcome to your little birthday adventure 💗"
+    )
 
     st.write(
-        "Okay birthday girl, your present isn't arriving in a box. "
-        "It's arriving with questions, hearts, and a boyfriend who "
-        "has clearly spent too much time coding. 🤓"
+        "Okay birthday girl, your present isn't arriving "
+        "in a box. It's arriving with questions, hearts, "
+        "and a boyfriend who has clearly spent too much "
+        "time coding. 🤓"
     )
-    st.write("Complete all three levels to unlock your surprise.")
+    st.write(
+        "Complete all three levels to unlock your surprise."
+    )
 
     if st.button(
         "Start my birthday adventure ✨",
@@ -361,17 +421,22 @@ elif st.session_state.level < len(QUESTIONS):
     question_data = level_data["questions"][question_index]
     key = question_key(level_index, question_index)
 
-    st.caption(f"LEVEL {level_index + 1} OF {len(QUESTIONS)}")
+    st.caption(
+        f"LEVEL {level_index + 1} OF {len(QUESTIONS)}"
+    )
     st.title(level_data["title"])
     st.write(level_data["intro"])
+
     show_progress()
 
     st.progress(
-        (question_index + 1) / len(level_data["questions"])
+        (question_index + 1)
+        / len(level_data["questions"])
     )
 
     st.subheader(
-        f"Question {question_index + 1}: {question_data['q']}"
+        f"Question {question_index + 1}: "
+        f"{question_data['q']}"
     )
 
     if key not in st.session_state.solved:
@@ -384,8 +449,11 @@ elif st.session_state.level < len(QUESTIONS):
         if st.button(
             "Lock in my answer 💌",
             use_container_width=True,
+            key=f"submit_{key}",
         ):
-            selected_index = question_data["options"].index(choice)
+            selected_index = (
+                question_data["options"].index(choice)
+            )
 
             if selected_index == question_data["correct"]:
                 st.session_state.solved.add(key)
@@ -394,7 +462,9 @@ elif st.session_state.level < len(QUESTIONS):
             else:
                 st.session_state[f"feedback_{key}"] = "wrong"
 
-        if st.session_state.get(f"feedback_{key}") == "wrong":
+        if st.session_state.get(
+            f"feedback_{key}"
+        ) == "wrong":
             st.error(
                 "Nope! Try again, birthday girl. 😏 "
                 "Hint: you know this one!"
@@ -407,6 +477,7 @@ elif st.session_state.level < len(QUESTIONS):
             if st.button(
                 "Next question ➜",
                 use_container_width=True,
+                key=f"next_{key}",
             ):
                 st.session_state.question += 1
                 st.rerun()
@@ -415,15 +486,19 @@ elif st.session_state.level < len(QUESTIONS):
             if st.button(
                 "Complete this level 💗",
                 use_container_width=True,
+                key=f"complete_{level_index}",
             ):
-                st.session_state.hearts += 1
+                st.session_state.hearts = min(
+                    3, st.session_state.hearts + 1
+                )
                 st.session_state.level += 1
                 st.session_state.question = 0
                 st.rerun()
 
     st.divider()
     st.caption(
-        f"Complete Level {level_index + 1} to unlock the next one."
+        f"Complete Level {level_index + 1} "
+        "to unlock the next one."
     )
 
 
@@ -433,6 +508,7 @@ elif st.session_state.level < len(QUESTIONS):
 
 elif not st.session_state.candle_blown:
     st.balloons()
+
     st.title(f"You did it, {SEJU}! 🎉")
     st.write("Three levels completed. Three hearts earned. 🩷")
     show_progress()
@@ -444,8 +520,8 @@ elif not st.session_state.candle_blown:
 
     st.subheader("Make a birthday wish ✨")
     st.write(
-        "Take a tiny moment for yourself. You deserve good things, "
-        "happy days, and cake. Especially cake."
+        "Take a tiny moment for yourself. You deserve "
+        "good things, happy days, and cake. Especially cake."
     )
 
     if st.button(
@@ -458,10 +534,10 @@ elif not st.session_state.candle_blown:
 
 
 # =====================================================
-# HEART-TO-HEART QUESTION — BEFORE THE SURPRISE
+# HEART-TO-HEART QUESTION
 # =====================================================
 
-elif st.session_state.get("ask_improvement", False):
+elif st.session_state.ask_improvement:
     st.markdown(
         "<h1 style='text-align:center;'>💌🩷</h1>",
         unsafe_allow_html=True,
@@ -474,8 +550,9 @@ elif st.session_state.get("ask_improvement", False):
         "there's something I really want to ask you."
     )
     st.write(
-        "I love you, and I want to keep learning how to love "
-        "you better. You can be completely honest with me. ❤️"
+        "I love you, and I want to keep learning how "
+        "to love you better. You can be completely "
+        "honest with me. ❤️"
     )
 
     options = [
@@ -489,6 +566,8 @@ elif st.session_state.get("ask_improvement", False):
         "Something else — let me tell you ✍️",
     ]
 
+    custom_option = "Something else — let me tell you ✍️"
+
     improvement = st.radio(
         "What is one thing you'd like me to improve in my behaviour?",
         options,
@@ -498,7 +577,7 @@ elif st.session_state.get("ask_improvement", False):
 
     custom_answer = ""
 
-    if improvement == "Something else — let me tell you ✍️":
+    if improvement == custom_option:
         custom_answer = st.text_area(
             "Tell me honestly, meri jaan 💌",
             placeholder="I'll listen with an open heart...",
@@ -509,14 +588,15 @@ elif st.session_state.get("ask_improvement", False):
         "Continue to my surprise 🎁",
         use_container_width=True,
     ):
-        if (
-            improvement == "Something else — let me tell you ✍️"
-            and not custom_answer.strip()
-        ):
-            st.warning("Write your answer first, meri jaan. 🫶")
+        if improvement == custom_option and not custom_answer.strip():
+            st.warning(
+                "Write your answer first, meri jaan. 🫶"
+            )
         else:
-            if improvement == "Something else — let me tell you ✍️":
-                st.session_state.improvement_answer = custom_answer.strip()
+            if improvement == custom_option:
+                st.session_state.improvement_answer = (
+                    custom_answer.strip()
+                )
             else:
                 st.session_state.improvement_answer = improvement
 
@@ -525,7 +605,7 @@ elif st.session_state.get("ask_improvement", False):
 
 
 # =====================================================
-# FINAL SURPRISE — PHOTOS UNLOCK HERE
+# FINAL SURPRISE
 # =====================================================
 
 else:
@@ -533,9 +613,10 @@ else:
 
     st.title(f"One last thing, {SEJU}... 🥹💗")
     st.write("You made it! Your final surprise is waiting.")
-    st.write("Thank you for sharing your honest answer with me. 🫶")
+    st.write(
+        "Thank you for sharing your honest answer with me. 🫶"
+    )
 
-    # Music appears only after she reaches the final surprise.
     romantic_background_music()
 
     st.divider()
@@ -546,7 +627,9 @@ else:
             unsafe_allow_html=True,
         )
 
-        st.subheader("A little surprise is waiting for you...")
+        st.subheader(
+            "A little surprise is waiting for you..."
+        )
         st.write(
             "Ready to unlock some of our favourite memories? "
             "This one's made just for you. 🥹💗"
@@ -592,15 +675,22 @@ else:
                         use_container_width=True,
                     )
                 else:
-                    st.error(f"Photo not found: {image_path}")
+                    st.warning(
+                        f"Photo not found: photos/photo{i}.jpg"
+                    )
 
         st.divider()
         st.subheader("A little letter for you 💌")
 
+        # Escape HTML characters before displaying the letter.
+        import html
+
+        safe_letter = html.escape(BIRTHDAY_LETTER).replace(
+            "\n", "<br>"
+        )
+
         st.markdown(
-            "<div class='birthday-card'>"
-            + BIRTHDAY_LETTER.replace("\n", "<br>")
-            + "</div>",
+            f"<div class='birthday-card'>{safe_letter}</div>",
             unsafe_allow_html=True,
         )
 
@@ -616,4 +706,20 @@ else:
             use_container_width=True,
         ):
             reset_game()
+
+            # Clear old answers so a replay starts fresh.
+            for state_key in list(st.session_state.keys()):
+                if (
+                    state_key.startswith("choice_")
+                    or state_key.startswith("feedback_")
+                    or state_key.startswith("submit_")
+                    or state_key.startswith("next_")
+                    or state_key.startswith("complete_")
+                    or state_key in (
+                        "improvement_choice",
+                        "custom_improvement_answer",
+                    )
+                ):
+                    del st.session_state[state_key]
+
             st.rerun()
