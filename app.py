@@ -31,68 +31,132 @@ MUSIC_FILE = BASE_DIR / "bg_music.mp3"
 
 
 # =====================================================
-# BACKGROUND MUSIC — FIXED F-STRING ISSUE
+# BACKGROUND MUSIC
 # =====================================================
 
 def romantic_background_music():
-    """Display a music player for the birthday surprise."""
+    """Show a play/pause player for the birthday song."""
 
     if not MUSIC_FILE.is_file():
-        st.caption(
-            "♫ Add bg_music.mp3 beside app.py "
-            "to enable birthday music."
+        st.error(
+            "Music file not found. Please add bg_music.mp3 "
+            "to the same folder as app.py."
         )
         return
 
     try:
+        audio_bytes = MUSIC_FILE.read_bytes()
+
+        if not audio_bytes:
+            st.error(
+                "The music file is empty. Please upload "
+                "your MP3 file again."
+            )
+            return
+
         audio_data = base64.b64encode(
-            MUSIC_FILE.read_bytes()
+            audio_bytes
         ).decode("ascii")
-    except OSError:
-        st.warning("The birthday music file could not be read.")
+
+    except OSError as error:
+        st.error(f"Could not read the music file: {error}")
         return
 
-    # This is deliberately a normal string, not an f-string.
-    # Therefore, JavaScript braces do not cause Python syntax errors.
+    # Normal string, not an f-string: JavaScript braces are safe.
     player_html = """
     <!DOCTYPE html>
     <html>
-    <body style="margin:0;background:transparent;">
-        <audio id="birthdayMusic"
-               loop
-               preload="auto"
-               src="data:audio/mpeg;base64,{{AUDIO_DATA}}">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body style="
+        margin: 0;
+        background: transparent;
+        font-family: Arial, sans-serif;
+    ">
+        <audio
+            id="birthdayMusic"
+            loop
+            preload="auto"
+            src="data:audio/mpeg;base64,{{AUDIO_DATA}}">
         </audio>
 
-        <button id="musicButton"
-            style="border:1px solid #efb6cb;
-                   border-radius:20px;
-                   background:#fff0f5;
-                   color:#9b4568;
-                   padding:8px 15px;
-                   font-size:13px;
-                   cursor:pointer;">
+        <button
+            id="musicButton"
+            type="button"
+            style="
+                border: 1px solid #efb6cb;
+                border-radius: 24px;
+                background: #fff0f5;
+                color: #9b4568;
+                padding: 10px 18px;
+                font-size: 14px;
+                cursor: pointer;
+            ">
             ♫ Tap to play our song 💗
         </button>
 
-        <script>
-            const audio = document.getElementById("birthdayMusic");
-            const button = document.getElementById("musicButton");
+        <p
+            id="musicStatus"
+            style="
+                color: #9b4568;
+                font-size: 12px;
+                margin: 5px 0;
+            ">
+        </p>
 
-            audio.volume = 0.18;
+        <script>
+            const audio =
+                document.getElementById("birthdayMusic");
+
+            const button =
+                document.getElementById("musicButton");
+
+            const status =
+                document.getElementById("musicStatus");
+
+            audio.volume = 0.25;
 
             button.addEventListener("click", async function () {
-                try {
-                    if (audio.paused) {
+                if (audio.paused) {
+                    status.textContent = "Loading our song...";
+
+                    try {
                         await audio.play();
-                        button.textContent = "♫ Playing for you 💗";
-                    } else {
-                        audio.pause();
-                        button.textContent = "♫ Play our song 💗";
+
+                        button.textContent =
+                            "♫ Pause our song 💗";
+
+                        status.textContent =
+                            "Playing just for you 💕";
+
+                    } catch (error) {
+                        status.textContent =
+                            "Could not play the song. Check the MP3 file.";
+
+                        console.error(
+                            "Audio playback failed:",
+                            error
+                        );
                     }
-                } catch (error) {
-                    button.textContent = "♫ Tap to try again 💗";
+                } else {
+                    audio.pause();
+
+                    button.textContent =
+                        "♫ Tap to play our song 💗";
+
+                    status.textContent = "Song paused 💗";
                 }
+            });
+
+            audio.addEventListener("error", function () {
+                status.textContent =
+                    "Audio could not be loaded. Check the MP3 file.";
+
+                console.error(
+                    "Audio loading error:",
+                    audio.error
+                );
             });
         </script>
     </body>
@@ -100,10 +164,15 @@ def romantic_background_music():
     """
 
     player_html = player_html.replace(
-        "{{AUDIO_DATA}}", audio_data
+        "{{AUDIO_DATA}}",
+        audio_data,
     )
 
-    components.html(player_html, height=48)
+    components.html(
+        player_html,
+        height=85,
+        scrolling=False,
+    )
 
 
 # =====================================================
@@ -371,7 +440,9 @@ def show_progress():
 
     st.write("### Your earned hearts")
     st.write(
-        " ".join(["💗"] * hearts + ["🤍"] * (3 - hearts))
+        " ".join(
+            ["💗"] * hearts + ["🤍"] * (3 - hearts)
+        )
     )
     st.progress(hearts / 3)
 
@@ -397,6 +468,7 @@ if not st.session_state.started:
         "and a boyfriend who has clearly spent too much "
         "time coding. 🤓"
     )
+
     st.write(
         "Complete all three levels to unlock your surprise."
     )
@@ -418,11 +490,13 @@ elif st.session_state.level < len(QUESTIONS):
     level_data = QUESTIONS[level_index]
     question_index = st.session_state.question
     question_data = level_data["questions"][question_index]
+
     key = question_key(level_index, question_index)
 
     st.caption(
         f"LEVEL {level_index + 1} OF {len(QUESTIONS)}"
     )
+
     st.title(level_data["title"])
     st.write(level_data["intro"])
 
@@ -450,7 +524,9 @@ elif st.session_state.level < len(QUESTIONS):
             use_container_width=True,
             key=f"submit_{key}",
         ):
-            selected_index = question_data["options"].index(choice)
+            selected_index = question_data["options"].index(
+                choice
+            )
 
             if selected_index == question_data["correct"]:
                 st.session_state.solved.add(key)
@@ -459,7 +535,9 @@ elif st.session_state.level < len(QUESTIONS):
             else:
                 st.session_state[f"feedback_{key}"] = "wrong"
 
-        if st.session_state.get(f"feedback_{key}") == "wrong":
+        if (
+            st.session_state.get(f"feedback_{key}") == "wrong"
+        ):
             st.error(
                 "Nope! Try again, birthday girl. 😏 "
                 "Hint: you know this one!"
@@ -491,6 +569,7 @@ elif st.session_state.level < len(QUESTIONS):
                 st.rerun()
 
     st.divider()
+
     st.caption(
         f"Complete Level {level_index + 1} "
         "to unlock the next one."
@@ -506,6 +585,7 @@ elif not st.session_state.candle_blown:
 
     st.title(f"You did it, {SEJU}! 🎉")
     st.write("Three levels completed. Three hearts earned. 🩷")
+
     show_progress()
 
     st.markdown(
@@ -514,6 +594,7 @@ elif not st.session_state.candle_blown:
     )
 
     st.subheader("Make a birthday wish ✨")
+
     st.write(
         "Take a tiny moment for yourself. You deserve "
         "good things, happy days, and cake. Especially cake."
@@ -544,6 +625,7 @@ elif st.session_state.ask_improvement:
         "Before I show you your final surprise, "
         "there's something I really want to ask you."
     )
+
     st.write(
         "I love you, and I want to keep learning how "
         "to love you better. You can be completely "
@@ -583,7 +665,10 @@ elif st.session_state.ask_improvement:
         "Continue to my surprise 🎁",
         use_container_width=True,
     ):
-        if improvement == custom_option and not custom_answer.strip():
+        if (
+            improvement == custom_option
+            and not custom_answer.strip()
+        ):
             st.warning(
                 "Write your answer first, meri jaan. 🫶"
             )
@@ -607,11 +692,16 @@ else:
     st.balloons()
 
     st.title(f"One last thing, {SEJU}... 🥹💗")
-    st.write("You made it! Your final surprise is waiting.")
+
+    st.write(
+        "You made it! Your final surprise is waiting."
+    )
+
     st.write(
         "Thank you for sharing your honest answer with me. 🫶"
     )
 
+    # Music appears on the final surprise screen.
     romantic_background_music()
 
     st.divider()
@@ -625,6 +715,7 @@ else:
         st.subheader(
             "A little surprise is waiting for you..."
         )
+
         st.write(
             "Ready to unlock some of our favourite memories? "
             "This one's made just for you. 🥹💗"
@@ -675,14 +766,17 @@ else:
                     )
 
         st.divider()
+
         st.subheader("A little letter for you 💌")
 
-        safe_letter = html.escape(BIRTHDAY_LETTER).replace(
-            "\n", "<br>"
-        )
+        safe_letter = html.escape(
+            BIRTHDAY_LETTER
+        ).replace("\n", "<br>")
 
         st.markdown(
-            f"<div class='birthday-card'>{safe_letter}</div>",
+            f"<div class='birthday-card'>"
+            f"{safe_letter}"
+            f"</div>",
             unsafe_allow_html=True,
         )
 
@@ -697,10 +791,10 @@ else:
             "Play the adventure again 🎊",
             use_container_width=True,
         ):
-            reset_game()
-
-            # Clear widget values from the previous game.
-            for state_key in list(st.session_state.keys()):
+            # Remove old widget values before restarting.
+            widget_keys = [
+                state_key
+                for state_key in st.session_state.keys()
                 if (
                     state_key.startswith("choice_")
                     or state_key.startswith("feedback_")
@@ -711,7 +805,11 @@ else:
                         "improvement_choice",
                         "custom_improvement_answer",
                     )
-                ):
-                    del st.session_state[state_key]
+                )
+            ]
 
+            for state_key in widget_keys:
+                del st.session_state[state_key]
+
+            reset_game()
             st.rerun()
