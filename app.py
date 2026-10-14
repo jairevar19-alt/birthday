@@ -67,7 +67,7 @@ QUESTIONS = [
                     "Put hands on your shoulder.",
                     "Touch or gudi-gudi on stomach"
                 ],
-                "correct": 0,
+                "correct": 3,
                 "success": "You know me a little too well. 😭"
             },
             {
