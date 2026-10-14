@@ -411,7 +411,7 @@ captions = [
         "One for the forever folder 💌"
     ]
 
-    cols = st.columns(2)
+cols = st.columns(2)
     for i, caption in enumerate(captions, start=1):
         image_path = photo_folder / f"photo{i}.jpg"
         with cols[(i - 1) % 2]:
