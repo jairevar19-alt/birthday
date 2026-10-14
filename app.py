@@ -325,7 +325,7 @@ elif st.session_state.level < len(QUESTIONS):
         f"Question {question_index + 1}: {question_data['q']}"
     )
 
-    if key not in st.session_state.solved:
+if key not in st.session_state.solved:
     choice = st.radio(
         "Choose your answer:",
         question_data["options"],
