@@ -155,25 +155,98 @@ st.set_page_config(
     layout="centered"
 )
 
+
 st.markdown("""
 <style>
+/* Soft romantic birthday background */
 .stApp {
-    background: linear-gradient(145deg, #fff1f6, #f6efff, #fffaf7);
+    background: linear-gradient(
+        145deg,
+        #FFF1F6,
+        #F6EFFF,
+        #FFFAF7
+    );
 }
-h1, h2, h3 {
-    color: #d94379;
+
+/* Rose-pink headings */
+h1, h2, h3, h4 {
+    color: #B83268 !important;
 }
+
+/* Main text */
+.stApp p,
+.stApp label,
+.stApp li,
+.stMarkdown {
+    color: #493447;
+}
+
+/* Captions */
+.stCaption,
+[data-testid="stCaptionContainer"] {
+    color: #76546B !important;
+}
+
+/* Birthday letter card */
+.birthday-card {
+    background: #FFFFFF;
+    color: #493447 !important;
+    padding: 22px;
+    border-radius: 20px;
+    border: 1px solid #FFD6E5;
+    line-height: 1.9;
+}
+
+/* Romantic pink buttons */
 div.stButton > button {
     border-radius: 22px;
     min-height: 45px;
+    background: #F8B4CE;
+    color: #49283B !important;
+    border: 1px solid #F08BB2;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
-.birthday-card {
-    background: rgba(255,255,255,0.8);
-    padding: 20px;
-    border-radius: 20px;
+
+/* Button hover effect */
+div.stButton > button:hover {
+    background: #E98CB4;
+    color: #FFFFFF !important;
+    border-color: #D85C91;
+}
+
+/* Quiz answer text */
+[data-testid="stRadio"] label p {
+    color: #493447 !important;
+}
+
+/* Text input fields */
+.stTextInput input,
+.stTextArea textarea {
+    color: #493447 !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #F0B7CF;
+}
+
+/* Progress bar */
+[data-testid="stProgressBar"] > div > div {
+    background-color: #E77DA8;
+}
+
+/* Links */
+.stApp a {
+    color: #B83268 !important;
+}
+
+/* Checkboxes */
+[data-testid="stCheckbox"] label p {
+    color: #493447 !important;
 }
 </style>
 """, unsafe_allow_html=True)
+
+
+
 
 
 def reset_game():
