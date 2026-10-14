@@ -404,8 +404,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 photo_folder = BASE_DIR / "photos"
-
-    captions = [
+captions = [
         "Our favourite photo 💗",
         "A cute memory 🫶",
         "Our silly side 😂",
