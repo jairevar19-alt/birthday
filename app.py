@@ -1,4 +1,3 @@
-
 import base64
 import html
 from pathlib import Path
@@ -24,15 +23,17 @@ st.set_page_config(
 
 SEJU = "Bubu"
 JIMMU = "JIMMU"
-# Change this line:
-MUSIC_FILE = BASE_DIR / "bg_music.mp3"
-
-# To this exact filename:
-MUSIC_FILE = BASE_DIR / "Lauv - I Like Me Better [Official Audio].mp3"
 
 BASE_DIR = Path(__file__).resolve().parent
 PHOTO_FOLDER = BASE_DIR / "photos"
-MUSIC_FILE = BASE_DIR / "bg_music.mp3"
+
+# Automatically check for both possible filenames so it never fails!
+POSSIBLE_MUSIC_FILES = [
+    BASE_DIR / "bg_music.mp3",
+    BASE_DIR / "Lauv - I Like Me Better [Official Audio].mp3"
+]
+
+MUSIC_FILE = next((f for f in POSSIBLE_MUSIC_FILES if f.is_file()), POSSIBLE_MUSIC_FILES[0])
 
 
 # =====================================================
@@ -44,8 +45,8 @@ def romantic_background_music():
 
     if not MUSIC_FILE.is_file():
         st.error(
-            "Music file not found. Please add bg_music.mp3 "
-            "to the same folder as app.py."
+            "Music file not found. Please upload 'bg_music.mp3' or "
+            "'Lauv - I Like Me Better [Official Audio].mp3' to the same folder as app.py."
         )
         return
 
