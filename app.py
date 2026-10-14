@@ -400,7 +400,11 @@ else:
 
     st.subheader("Our little memories 📸")
 
-    photo_folder = Path("photos")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+photo_folder = BASE_DIR / "photos"
+
     captions = [
         "Our favourite photo 💗",
         "A cute memory 🫶",
