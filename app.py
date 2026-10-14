@@ -412,13 +412,13 @@ captions = [
     ]
 
 cols = st.columns(2)
-    for i, caption in enumerate(captions, start=1):
-        image_path = photo_folder / f"photo{i}.jpg"
-        with cols[(i - 1) % 2]:
-            if image_path.exists():
-                st.image(str(image_path), caption=caption, use_container_width=True)
-            else:
-                st.info(f"📷 Photo {i} goes here\n\nAdd photos/photo{i}.jpg")
+for i, caption in enumerate(captions, start=1):
+    image_path = photo_folder / f"photo{i}.jpg"
+    with cols[(i - 1) % 2]:
+        if image_path.exists():
+            st.image(str(image_path), caption=caption, use_container_width=True)
+        else:
+            st.info(f"📷 Photo {i} goes here\n\nAdd photos/photo{i}.jpg")
 
     st.divider()
     st.subheader("A little letter for you 💌")
