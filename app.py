@@ -424,9 +424,8 @@ elif st.session_state.get("ask_improvement", False):
     improvement = st.radio(
         "What is one thing you'd like me to improve in my behaviour?",
         options,
-        index=None,
+        index=0,
         key="improvement_choice",
-        placeholder="Choose the one that feels right...",
     )
 
     custom_answer = ""
