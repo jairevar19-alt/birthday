@@ -24,6 +24,11 @@ st.set_page_config(
 
 SEJU = "Bubu"
 JIMMU = "JIMMU"
+# Change this line:
+MUSIC_FILE = BASE_DIR / "bg_music.mp3"
+
+# To this exact filename:
+MUSIC_FILE = BASE_DIR / "Lauv - I Like Me Better [Official Audio].mp3"
 
 BASE_DIR = Path(__file__).resolve().parent
 PHOTO_FOLDER = BASE_DIR / "photos"
