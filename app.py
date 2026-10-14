@@ -28,11 +28,11 @@ QUESTIONS = [
                 "q": "What does the birthday girl deserve today?",
                 "options": [
                     "A day full of happiness",
-                    "Extra homework",
-                    "A lecture from me"
+                    "Extra cuddles.",
+                    "Extra love & cuddles"
                 ],
-                "correct": 0,
-                "success": "Exactly. Only happiness and absolutely no homework. 💗"
+                "correct": 2,
+                "success": "Exactly. Only happiness and alots of love & cuddles. 💗"
             },
             {
                 "q": "What is the official birthday rule?",
@@ -53,9 +53,9 @@ QUESTIONS = [
             {
                 "q": "Which one is our special inside joke?",
                 "options": [
-                    "ADD YOUR REAL INSIDE JOKE",
-                    "A funny wrong answer",
-                    "Another funny wrong answer"
+                   "When we met on our 2nd date you were watching....",
+                    "your chappal falls from bike",
+                    "I fall on your door at that day."
                 ],
                 "correct": 0,
                 "success": "HAHA, only we would understand that. 😂💗"
@@ -63,9 +63,9 @@ QUESTIONS = [
             {
                 "q": "What do I do that annoys you the most?",
                 "options": [
-                    "ADD YOUR REAL ANSWER",
-                    "A funny wrong answer",
-                    "Another funny wrong answer"
+                    "Touch your hairs.",
+                    "Put hands on your shoulder.",
+                    "Touch or gudi-gudi on stomach"
                 ],
                 "correct": 0,
                 "success": "You know me a little too well. 😭"
@@ -73,9 +73,9 @@ QUESTIONS = [
             {
                 "q": "Which memory should we relive?",
                 "options": [
-                    "ADD YOUR FAVOURITE MEMORY",
-                    "Another memory",
-                    "A silly moment"
+                    "Our rainy season dates.(dadar wali.....)",
+                    "Memories at our homes",
+                    "Ganapati of 2025..."
                 ],
                 "correct": 0,
                 "success": "Keeping this one in our forever folder. 🥹"
