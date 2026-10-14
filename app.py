@@ -99,11 +99,11 @@ QUESTIONS = [
             {
                 "q": "Which song belongs on your birthday playlist?",
                 "options": [
-                    "A dramatic villain soundtrack",
-                    "ADD HER FAVOURITE SONG",
-                    "My alarm clock ringtone"
+                    "My voice...",
+                    "Ek din teri raahon mei",
+                    "Gujarati songs"
                 ],
-                "correct": 1,
+                "correct": 2,
                 "success": "Birthday soundtrack unlocked. 🎶"
             },
             {
