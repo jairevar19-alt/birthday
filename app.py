@@ -1,12 +1,74 @@
 
-import streamlit as st
+import base64
 from pathlib import Path
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+
+# =====================================================
+# BACKGROUND MUSIC
+# =====================================================
+
+def romantic_background_music():
+    music_path = Path(__file__).resolve().parent / "bg_music.mp3"
+
+    if not music_path.is_file():
+        st.caption("♫ Add bg_music.mp3 beside app.py to enable birthday music.")
+        return
+
+    audio_data = base64.b64encode(
+        music_path.read_bytes()
+    ).decode("utf-8")
+
+    components.html(
+        f"""
+        <!DOCTYPE html>
+        <html>
+        <body style="margin:0;background:transparent;">
+            <audio id="birthdayMusic"
+                   loop
+                   preload="auto"
+                   src="data:audio/mpeg;base64,{audio_data}">
+            </audio>
+
+            <button id="musicButton"
+                style="border:1px solid #efb6cb;
+                       border-radius:20px;
+                       background:#fff0f5;
+                       color:#9b4568;
+                       padding:8px 15px;
+                       font-size:13px;
+                       cursor:pointer;">
+                ♫ Tap once for a little magic 💗
+            </button>
+
+            <script>
+                const audio = document.getElementById("birthdayMusic");
+                const button = document.getElementById("musicButton");
+                audio.volume = 0.18;
+
+                button.addEventListener("click", async () => {
+                    try {
+                        await audio.play();
+                        button.textContent = "♫ Playing for you 💗";
+                    } catch (error) {
+                        button.textContent = "♫ Tap to try again";
+                    }
+                });
+            </script>
+        </body>
+        </html>
+        """,
+        height=48,
+    )
+
 
 # =====================================================
 # BUBU'S BIRTHDAY ADVENTURE — PERSONAL SETTINGS
 # =====================================================
 
-SEJU = "Bubu"  # Change to "Mari jaan" if you prefer
+SEJU = "Bubu"
 JIMMU = "JIMMU"
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -148,6 +210,7 @@ Happy birthday, mari jaan. I love you. 💗
 — {JIMMU}
 """
 
+
 # =====================================================
 # PAGE SETTINGS
 # =====================================================
@@ -157,6 +220,7 @@ st.set_page_config(
     page_icon="💗",
     layout="centered",
 )
+
 
 # =====================================================
 # PINK ROMANTIC THEME
@@ -227,6 +291,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 # =====================================================
 # GAME STATE
 # =====================================================
@@ -283,6 +348,7 @@ if not st.session_state.started:
     ):
         st.session_state.started = True
         st.rerun()
+
 
 # =====================================================
 # QUIZ LEVELS
@@ -360,6 +426,7 @@ elif st.session_state.level < len(QUESTIONS):
         f"Complete Level {level_index + 1} to unlock the next one."
     )
 
+
 # =====================================================
 # CANDLE AND BIRTHDAY WISH
 # =====================================================
@@ -388,6 +455,7 @@ elif not st.session_state.candle_blown:
         st.session_state.candle_blown = True
         st.session_state.ask_improvement = True
         st.rerun()
+
 
 # =====================================================
 # HEART-TO-HEART QUESTION — BEFORE THE SURPRISE
@@ -441,15 +509,11 @@ elif st.session_state.get("ask_improvement", False):
         "Continue to my surprise 🎁",
         use_container_width=True,
     ):
-        if improvement is None:
-            st.warning("Choose an answer first, Bubu. 💗")
-
-        elif (
+        if (
             improvement == "Something else — let me tell you ✍️"
             and not custom_answer.strip()
         ):
             st.warning("Write your answer first, meri jaan. 🫶")
-
         else:
             if improvement == "Something else — let me tell you ✍️":
                 st.session_state.improvement_answer = custom_answer.strip()
@@ -458,6 +522,7 @@ elif st.session_state.get("ask_improvement", False):
 
             st.session_state.ask_improvement = False
             st.rerun()
+
 
 # =====================================================
 # FINAL SURPRISE — PHOTOS UNLOCK HERE
@@ -469,6 +534,9 @@ else:
     st.title(f"One last thing, {SEJU}... 🥹💗")
     st.write("You made it! Your final surprise is waiting.")
     st.write("Thank you for sharing your honest answer with me. 🫶")
+
+    # Music appears only after she reaches the final surprise.
+    romantic_background_music()
 
     st.divider()
 
@@ -514,17 +582,17 @@ else:
         columns = st.columns(2)
 
         for i, caption in enumerate(captions, start=1):
-    image_path = PHOTO_FOLDER / f"photo{i}.jpg"
+            image_path = PHOTO_FOLDER / f"photo{i}.jpg"
 
-    with columns[(i - 1) % 2]:
-        if image_path.is_file():
-            st.image(
-                str(image_path),
-                caption=caption,
-                use_container_width=True,
-            )
-        else:
-            st.error(f"Photo not found: {image_path}")
+            with columns[(i - 1) % 2]:
+                if image_path.is_file():
+                    st.image(
+                        str(image_path),
+                        caption=caption,
+                        use_container_width=True,
+                    )
+                else:
+                    st.error(f"Photo not found: {image_path}")
 
         st.divider()
         st.subheader("A little letter for you 💌")
