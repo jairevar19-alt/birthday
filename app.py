@@ -514,20 +514,17 @@ else:
         columns = st.columns(2)
 
         for i, caption in enumerate(captions, start=1):
-            image_path = PHOTO_FOLDER / f"photo{i}.jpg"
+    image_path = PHOTO_FOLDER / f"photo{i}.jpg"
 
-            with columns[(i - 1) % 2]:
-                if image_path.exists():
-                    st.image(
-                        str(image_path),
-                        caption=caption,
-                        use_container_width=True,
-                    )
-                else:
-                    st.info(
-                        f"📷 Photo {i} goes here.\n\n"
-                        f"Add your image as photos/photo{i}.jpg"
-                    )
+    with columns[(i - 1) % 2]:
+        if image_path.is_file():
+            st.image(
+                str(image_path),
+                caption=caption,
+                use_container_width=True,
+            )
+        else:
+            st.error(f"Photo not found: {image_path}")
 
         st.divider()
         st.subheader("A little letter for you 💌")
